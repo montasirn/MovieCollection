@@ -24,4 +24,8 @@ public class SimpleMovie {
         return actorsData;
     }
 
+    public String getTitle(){
+        return title;
+    }
+
 }

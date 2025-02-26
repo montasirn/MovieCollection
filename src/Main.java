@@ -9,7 +9,6 @@ public class Main {
 
             ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
 
-
             System.out.println("Enter an actor's name or (q) to quit");
             Scanner s = new Scanner(System.in);
             String actor = s.nextLine();
@@ -40,13 +39,16 @@ public class Main {
             Set<String> actorSet = MovieDatabaseBuilder.removeDupes(allActorsList);
 
             boolean firstDegree = actorSet.contains("Kevin Bacon");
-
-            System.out.println(firstDegree);
+            if (firstDegree){
+                System.out.println(actor + " -> " + " -> Kevin Bacon");
+            }
 
             boolean secondDegree = false;
+            String link = "";
             if (!firstDegree){
                 for (String str : data){
                     if (actorSet.contains(str)) {
+                        link = str;
                         String costar = MovieDatabaseBuilder.buildActorCast(movies,str);
                         String[] costarList = costar.split(":");
 
@@ -55,46 +57,61 @@ public class Main {
                         secondDegree = test.contains("Kevin Bacon");
                     }
                     if (secondDegree){
+                        System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor, link, movies) + " -> " + link + " -> " + MovieDatabaseBuilder.movieName(link, "Kevin Bacon", movies) + " -> Kevin Bacon");
                         break;
                     }
                 }
             }
 
-            System.out.println(secondDegree);
-
             Set<String> third = Set.of();
 
+            String costarThird = "";
+            String secondLink = "";
             boolean thirdDegree = false;
             if (!secondDegree){
                 for (String string : actorSet) {
-
                     String costar = MovieDatabaseBuilder.buildActorCast(movies, string);
                     String[] costarList = costar.split(":");
 
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
 
                     third = test;
+                    Set<String> testSet = new HashSet<String>();
 
                     for (String str : data){
                         if (test.contains(str)) {
+                            costarThird = str;
                             String costarNext = MovieDatabaseBuilder.buildActorCast(movies,str);
                             String[] costarListNext = costarNext.split(":");
 
                             Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
+                            testSet = testNext;
 
                             thirdDegree = testNext.contains("Kevin Bacon");
                         }
                         if (thirdDegree){
-                            break;
+                            for (String findThird : testSet){
+                                if (!Objects.equals(MovieDatabaseBuilder.movieName(findThird, costarThird, movies), "")){
+                                    secondLink = findThird;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            System.out.println(thirdDegree);
+            System.out.println("Result: " + secondLink);
 
+            System.out.println(costarThird);
+
+            if (thirdDegree){
+                System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,secondLink,movies) + " -> " + secondLink + " -> " + MovieDatabaseBuilder.movieName(costarThird,secondLink,movies) + " -> " + costarThird + " -> " + MovieDatabaseBuilder.movieName(secondLink, "Kevin Bacon", movies) + " -> Kevin Bacon");
+            }
 
             boolean fourthDegree = false;
+
+            Set<String> totalCast = new HashSet<>(Set.of());
 
             if (!thirdDegree){
                 for (String str : third){
@@ -103,6 +120,13 @@ public class Main {
 
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
 
+                    totalCast.addAll(test);
+                }
+                for (String str : totalCast){
+                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                    String[] costarList = costar.split(":");
+
+                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
                     for (String string : data){
                         if (test.contains(string)) {
                             String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);

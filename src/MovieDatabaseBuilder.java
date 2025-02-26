@@ -47,4 +47,14 @@ public class MovieDatabaseBuilder {
         return actorSet;
     }
 
+    public static String movieName(String actor1, String actor2, ArrayList<SimpleMovie> movies){
+        String movie = "";
+        for (SimpleMovie title : movies){
+            if (title.getActorsData().contains(actor1) && title.getActorsData().contains(actor2)){
+                movie = title.getTitle();
+            }
+        }
+        return movie;
+    }
+
 }
