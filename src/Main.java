@@ -62,6 +62,8 @@ public class Main {
 
             System.out.println(secondDegree);
 
+            Set<String> third = Set.of();
+
             boolean thirdDegree = false;
             if (!secondDegree){
                 for (String string : actorSet) {
@@ -70,6 +72,8 @@ public class Main {
                     String[] costarList = costar.split(":");
 
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+
+                    third = test;
 
                     for (String str : data){
                         if (test.contains(str)) {
@@ -88,6 +92,34 @@ public class Main {
             }
 
             System.out.println(thirdDegree);
+
+
+            boolean fourthDegree = false;
+
+            if (!thirdDegree){
+                for (String str : third){
+                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                    String[] costarList = costar.split(":");
+
+                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+
+                    for (String string : data){
+                        if (test.contains(string)) {
+                            String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);
+                            String[] costarListNext = costarNext.split(":");
+
+                            Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
+
+                            fourthDegree = testNext.contains("Kevin Bacon");
+                        }
+                        if (fourthDegree){
+                            break;
+                        }
+                    }
+                }
+            }
+
+            System.out.println(fourthDegree);
 
         }
         catch (FileNotFoundException noFile) {
