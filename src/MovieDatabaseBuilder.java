@@ -1,9 +1,6 @@
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.HashSet;
-import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class MovieDatabaseBuilder {
 
@@ -55,6 +52,49 @@ public class MovieDatabaseBuilder {
             }
         }
         return movie;
+    }
+
+    public static String fourth(boolean thirdDegree, Set<String> third, ArrayList<SimpleMovie> movies, Set<String> totalCast, HashMap<String, Set<String>> actorCast4, String[] data, boolean fourthDegree, String name1) {
+        if (!thirdDegree) {
+            for (String str : third) {
+                String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                String[] costarList = costar.split(":");
+
+                Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+
+                totalCast.addAll(test);
+            }
+            for (String str : totalCast) {
+                String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                String[] costarList = costar.split(":");
+
+                Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+
+                actorCast4.put(str, test);
+            }
+            for (String str : totalCast) {
+                String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                String[] costarList = costar.split(":");
+
+                Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+                for (String string : data) {
+                    if (test.contains(string)) {
+                        name1 = string;
+                        String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);
+                        String[] costarListNext = costarNext.split(":");
+
+                        Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
+
+                        fourthDegree = testNext.contains("Kevin Bacon");
+                    }
+                    if (fourthDegree) {
+                        break;
+                    }
+                }
+            }
+
+        }
+        return name1;
     }
 
 }

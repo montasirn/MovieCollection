@@ -119,61 +119,91 @@ public class Main {
 
             boolean fourthDegree = false;
 
+            System.out.println(Arrays.toString(data));
+
             Set<String> totalCast = new HashSet<>(Set.of());
 
             // Direct link to Kevin Bacon
-            String name1 = "";
+            String name1 = "none";
 
-            String name2 = "";
-            String name3 = "";
+            String name2 = "none";
+            String name3 = "none";
 
             HashMap<String , Set<String>> actorCast4 = new HashMap<String, Set<String>>();
 
-            if (!thirdDegree){
-                for (String str : third){
-                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
-                    String[] costarList = costar.split(":");
+//            if (!thirdDegree){
+//                for (String str : third){
+//                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+//                    String[] costarList = costar.split(":");
+//
+//                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+//
+//                    totalCast.addAll(test);
+//                }
+//                for (String str : totalCast){
+//                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+//                    String[] costarList = costar.split(":");
+//
+//                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+//
+//                    actorCast4.put(str, test);
+//                }
+//                for (String str : totalCast){
+//                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+//                    String[] costarList = costar.split(":");
+//
+//                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+//                    for (String string : data){
+//                        if (test.contains(string)){
+//                            name1 = string;
+//                            String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);
+//                            String[] costarListNext = costarNext.split(":");
+//
+//                            Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
+//
+//                            fourthDegree = testNext.contains("Kevin Bacon");
+//                        }
+//                        if (fourthDegree){
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
 
-                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+            name1 = MovieDatabaseBuilder.fourth(thirdDegree, third, movies, totalCast, actorCast4, data, fourthDegree, name1);
+            System.out.println("Result: "+ name1);
 
-                    totalCast.addAll(test);
-                }
-                for (String str : totalCast){
-                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
-                    String[] costarList = costar.split(":");
-
-                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
-
-                    actorCast4.put(str, test);
-                }
-                for (String str : totalCast){
-                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
-                    String[] costarList = costar.split(":");
-
-                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
-                    for (String string : data){
-                        if (test.contains(string)) {
-                            name1 = string;
-                            String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);
-                            String[] costarListNext = costarNext.split(":");
-
-                            Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
-
-                            fourthDegree = testNext.contains("Kevin Bacon");
-                        }
-                        if (fourthDegree){
-                            break;
-                        }
+            for (String key : actorCast4.keySet()){
+                if (actorCast4.get(key).contains(name1)){
+                    if (key.contains(" ") && !Objects.equals(MovieDatabaseBuilder.movieName(key, name1, movies), "")){
+                        name2 = key;
+                        fourthDegree = true;
+                        break;
                     }
                 }
             }
 
-            for (String key : actorCast4.keySet()){
-                if (actorCast4.get(key).contains(name1)){
-                    for (String n : actorCast4.get(key)){
-                        if (!Objects.equals(MovieDatabaseBuilder.movieName(n, name1, movies), "")){
-                            name2 = n;
-                            break;
+            if (name2.equals("none")){
+                System.out.println("ran");
+                for (int counter = 0; counter < data.length; counter ++){
+                    if (data[counter].equals(name1)){
+                        data[counter] = "";
+                    }
+                }
+            }
+
+            name1 = MovieDatabaseBuilder.fourth(thirdDegree, third, movies, totalCast, actorCast4, data, fourthDegree, name1);
+
+            System.out.println("Result:" + name1);
+
+            if (fourthDegree){
+                for (String str : actorCast.keySet()){
+                    if (actorCast.get(str).contains(name2)){
+                        for (String n : actorCast.get(str)){
+                            if (!Objects.equals(MovieDatabaseBuilder.movieName(n, name2, movies), "") && !(Objects.equals(MovieDatabaseBuilder.movieName(actor, n, movies),""))){
+                                name3 = n;
+                                break;
+                            }
                         }
                     }
                 }
@@ -181,7 +211,9 @@ public class Main {
 
             System.out.println(name1);
             System.out.println(name2);
+            System.out.println(name3);
             System.out.println(fourthDegree);
+            System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,name3,movies)+ " -> " + name3 + " -> "+ MovieDatabaseBuilder.movieName(name3,name2,movies) + " -> " + name2 + " -> " + MovieDatabaseBuilder.movieName(name2,name1,movies) + " -> " + name1 + " -> " + MovieDatabaseBuilder.movieName(name1, "Kevin Bacon", movies) + " -> Kevin Bacon");
 
         }
         catch (FileNotFoundException noFile) {
