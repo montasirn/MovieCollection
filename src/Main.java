@@ -65,48 +65,57 @@ public class Main {
 
             Set<String> third = Set.of();
 
-            String costarThird = "";
-            String secondLink = "";
+
+            HashMap<String , Set<String>> actorCast = new HashMap<String, Set<String>>();
+            String link1 = "";
             boolean thirdDegree = false;
             if (!secondDegree){
                 for (String string : actorSet) {
+
                     String costar = MovieDatabaseBuilder.buildActorCast(movies, string);
                     String[] costarList = costar.split(":");
 
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
 
                     third = test;
-                    Set<String> testSet = new HashSet<String>();
+
+                    actorCast.put(string, test);
 
                     for (String str : data){
                         if (test.contains(str)) {
-                            costarThird = str;
+                            link1 = str;
                             String costarNext = MovieDatabaseBuilder.buildActorCast(movies,str);
                             String[] costarListNext = costarNext.split(":");
 
                             Set<String> testNext = MovieDatabaseBuilder.removeDupes(costarListNext);
-                            testSet = testNext;
 
                             thirdDegree = testNext.contains("Kevin Bacon");
                         }
                         if (thirdDegree){
-                            for (String findThird : testSet){
-                                if (!Objects.equals(MovieDatabaseBuilder.movieName(findThird, costarThird, movies), "")){
-                                    secondLink = findThird;
-                                    break;
-                                }
-                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            String link2 = "";
+            if (thirdDegree){
+                for (String str : actorCast.keySet()){
+                    Set<String> cocoStar = actorCast.get(str);
+                    for (String string : cocoStar){
+                        if (!Objects.equals(MovieDatabaseBuilder.movieName(string, link1, movies), "")){
+                            link2 = string;
+                            break;
                         }
                     }
                 }
             }
 
-            System.out.println("Result: " + secondLink);
-
-            System.out.println(costarThird);
+            System.out.println(link1);
+            System.out.println(link2);
+            System.out.println(thirdDegree);
 
             if (thirdDegree){
-                System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,secondLink,movies) + " -> " + secondLink + " -> " + MovieDatabaseBuilder.movieName(costarThird,secondLink,movies) + " -> " + costarThird + " -> " + MovieDatabaseBuilder.movieName(secondLink, "Kevin Bacon", movies) + " -> Kevin Bacon");
+                System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,link2,movies) + " -> " + link2 + " -> " + MovieDatabaseBuilder.movieName(link2,link1,movies) + " -> " + link1 + " -> " + MovieDatabaseBuilder.movieName(link1, "Kevin Bacon", movies) + " -> Kevin Bacon");
             }
 
             boolean fourthDegree = false;
