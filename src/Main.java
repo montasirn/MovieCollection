@@ -65,8 +65,9 @@ public class Main {
 
             Set<String> third = Set.of();
 
-
+            // Hash set of the cocoStars of the original actors
             HashMap<String , Set<String>> actorCast = new HashMap<String, Set<String>>();
+            // Link to Kevin Bacon
             String link1 = "";
             boolean thirdDegree = false;
             if (!secondDegree){
@@ -78,7 +79,7 @@ public class Main {
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
 
                     third = test;
-
+                    // adds the cast that has worked with actor, string, actor -> coactor -> cocoactor and their link is the key
                     actorCast.put(string, test);
 
                     for (String str : data){
@@ -97,22 +98,20 @@ public class Main {
                     }
                 }
             }
+            // link from link1 to original actor
             String link2 = "";
             if (thirdDegree){
                 for (String str : actorCast.keySet()){
-                    Set<String> cocoStar = actorCast.get(str);
-                    for (String string : cocoStar){
-                        if (!Objects.equals(MovieDatabaseBuilder.movieName(string, link1, movies), "")){
-                            link2 = string;
-                            break;
+                    if (actorCast.get(str).contains(link1)){
+                        for (String n : actorCast.get(str)){
+                            if (!Objects.equals(MovieDatabaseBuilder.movieName(n, link1, movies), "") && !(Objects.equals(MovieDatabaseBuilder.movieName(actor, n, movies),""))){
+                                link2 = n;
+                                break;
+                            }
                         }
                     }
                 }
             }
-
-            System.out.println(link1);
-            System.out.println(link2);
-            System.out.println(thirdDegree);
 
             if (thirdDegree){
                 System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,link2,movies) + " -> " + link2 + " -> " + MovieDatabaseBuilder.movieName(link2,link1,movies) + " -> " + link1 + " -> " + MovieDatabaseBuilder.movieName(link1, "Kevin Bacon", movies) + " -> Kevin Bacon");
@@ -121,6 +120,14 @@ public class Main {
             boolean fourthDegree = false;
 
             Set<String> totalCast = new HashSet<>(Set.of());
+
+            // Direct link to Kevin Bacon
+            String name1 = "";
+
+            String name2 = "";
+            String name3 = "";
+
+            HashMap<String , Set<String>> actorCast4 = new HashMap<String, Set<String>>();
 
             if (!thirdDegree){
                 for (String str : third){
@@ -136,8 +143,17 @@ public class Main {
                     String[] costarList = costar.split(":");
 
                     Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
+
+                    actorCast4.put(str, test);
+                }
+                for (String str : totalCast){
+                    String costar = MovieDatabaseBuilder.buildActorCast(movies, str);
+                    String[] costarList = costar.split(":");
+
+                    Set<String> test = MovieDatabaseBuilder.removeDupes(costarList);
                     for (String string : data){
                         if (test.contains(string)) {
+                            name1 = string;
                             String costarNext = MovieDatabaseBuilder.buildActorCast(movies, string);
                             String[] costarListNext = costarNext.split(":");
 
@@ -152,6 +168,19 @@ public class Main {
                 }
             }
 
+            for (String key : actorCast4.keySet()){
+                if (actorCast4.get(key).contains(name1)){
+                    for (String n : actorCast4.get(key)){
+                        if (!Objects.equals(MovieDatabaseBuilder.movieName(n, name1, movies), "")){
+                            name2 = n;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            System.out.println(name1);
+            System.out.println(name2);
             System.out.println(fourthDegree);
 
         }
