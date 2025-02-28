@@ -20,6 +20,11 @@ public class Main {
                 // gets the cast of the actor inputted
                 String cast = MovieDatabaseBuilder.buildActorCast(movies,actor);
 
+                if (cast.isEmpty()){
+                    System.out.println("Actor not included in data file.");
+                    break;
+                }
+
                 // All coActors in the cast
                 String[] allActorsList = cast.split(":");
 
@@ -227,6 +232,11 @@ public class Main {
                     System.out.println(actor + " -> " + MovieDatabaseBuilder.movieName(actor,name3,movies)+ " -> " + name3 + " -> "+ MovieDatabaseBuilder.movieName(name3,name2,movies) + " -> " + name2 + " -> " + MovieDatabaseBuilder.movieName(name2,name1,movies) + " -> " + name1 + " -> " + MovieDatabaseBuilder.movieName(name1, "Kevin Bacon", movies) + " -> Kevin Bacon");
                     System.out.println("Bacon number: 4");
                 }
+
+                if (!firstDegree && !secondDegree && !thirdDegree && !fourthDegree){
+                    System.out.println("No connection Found");
+                }
+
             }
 
             System.exit(10);
